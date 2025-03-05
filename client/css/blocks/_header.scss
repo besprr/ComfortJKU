@@ -1,0 +1,52 @@
+.header {
+	height: 60px;
+
+	&__list {
+		display: flex;
+		column-gap: 40px;
+		@include media(920px) {
+			display: none;
+		}
+	}
+
+	&__container {
+		height: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	&__logo {
+		font-size: 20px;
+		font-family: 'Jost';
+		font-weight: 600;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	&__buttons{
+		@include media(920px) {
+			display: none;
+		}	
+	}
+
+	&__button {
+		background-color: transparent;
+		border: none;
+		border-radius: 10px;
+		color: var(--color-dark);
+
+		@include hover {
+			background-color: var(--color-light-gray);
+		}
+	}
+
+	&__admin-button{
+		display: none;
+	}
+
+	&__leave-button{
+		display: none;
+	}
+
+}

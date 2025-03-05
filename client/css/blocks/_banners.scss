@@ -1,0 +1,46 @@
+.banners{
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	column-gap: 10px;
+	row-gap: 10px;
+	margin-bottom: 100px;
+	
+	
+
+	&-card{
+		width: 100%;
+		max-width: 565px;
+		height: 210px;
+		display: flex;
+		justify-content: space-between;
+		padding: 15px;
+		background-color: var(--color-light-gray);
+		box-sizing: border-box;
+		border-radius: 10px;
+
+		&__title{
+			font-family: 'Jost';
+			font-weight: 600;
+			font-style: normal;
+			font-display: swap;
+			margin-bottom: 10px;
+			font-size: 24px;
+		}
+
+		&__icon{
+			display: flex;
+			align-items: center;
+		}
+
+		&__description{
+			line-height: 121%;
+		}
+
+		&__group{
+			width: 295px;
+		}
+		
+	}
+
+}

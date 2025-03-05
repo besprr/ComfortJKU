@@ -1,0 +1,35 @@
+a,
+button,
+input,
+textarea,
+svg * {
+	transition-duration: var(--transition-duration);
+}
+
+html,
+body {
+	font-size: 18px;
+	font-family: 'Jost';
+	font-weight: normal;
+	font-style: normal;
+	scroll-behavior: smooth;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+button {
+	height: 50px;
+	&:hover {
+		cursor: pointer;
+		background-color: #cc2339;
+	}
+	padding-inline: 15px;
+	font-size: 17px;
+	border-radius: .6em;
+	border: none;
+	background-color: #e01935;
+	color: var(--color-light);
+}

@@ -1,0 +1,27 @@
+.about{
+	margin-bottom: 100px;
+	&__wrapper{
+		display: flex;
+		flex-direction: column;
+		row-gap: 40px;
+	}
+
+	&__group{
+		display: flex;
+		flex-direction: column;
+		row-gap: 20px;
+	}
+
+	&__title{
+		font-size: 48px;
+		font-family: 'Jost';
+		font-weight: 600;
+		font-style: normal;
+		font-display: swap;
+	}
+
+	&__description{
+		font-size: 23px;
+		line-height: 180%;
+	}
+}
