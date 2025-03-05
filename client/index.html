@@ -32,11 +32,14 @@
 					</button>
 					<button
 						class="header__login-button header__button"
-						onclick="loginForm.showModal()"
+						onclick="loginDialog.showModal()"
 					>
 						Войти
 					</button>
-					<button class="header__register-button header__button">
+					<button
+						class="header__register-button header__button"
+						onclick="registerDialog.showModal()"
+					>
 						Зарегистрироваться
 					</button>
 				</div>
@@ -486,7 +489,7 @@
 				</div>
 			</section>
 
-			<section class="about container" id='about'>
+			<section class="about container" id="about">
 				<div class="about__wrapper">
 					<div class="about__group">
 						<h2 class="about__title">Что такое КОМФОРТ ЖКУ?</h2>
@@ -527,12 +530,32 @@
 			</section>
 
 			<section class="bid container">
-				<form action="" class="bid__form" id='bidForm'>
+				<form action="" class="bid__form" id="bidForm">
 					<h2 class="bid__title">Форма отправки заявки</h2>
-					<textarea name="" id="" class='bid__problem'></textarea>
-					<input type="text" class='bid__address input'>
-					<input type="text" class='bid__apartment input'>
-					<input type="datetime-local">
+					<select id="masterSelect" class="bid__master input">
+						<option value="" disabled selected>Выберите мастера</option>
+					</select>
+					<textarea
+						name=""
+						id="problemDescription"
+						class="bid__problem input"
+						placeholder="Проблема"
+					></textarea>
+					<input
+						type="text"
+						id="address"
+						class="bid__address input"
+						placeholder="Адрес"
+					/>
+					<input
+						type="text"
+						id="apartmentNumber"
+						class="bid__apartment input"
+						placeholder="Номер квартиры"
+					/>
+					<input type="date" id="bookingDate" class="input" />
+					<input type="time" id="bookingTime" class="input" />
+					<button type="submit">Отправить заявку</button>
 				</form>
 			</section>
 		</main>
@@ -573,8 +596,8 @@
 			</form>
 		</dialog>
 
-		<dialog class="login" id="loginForm">
-			<form class="login__form" method="dialog">
+		<dialog class="login" id="loginDialog">
+			<form class="login__form" method="dialog" id='loginForm'>
 				<h2 class="login__title">Авторизация</h2>
 				<input
 					type="text"
@@ -591,5 +614,44 @@
 				<button class="login__auth-btn button">Войти</button>
 			</form>
 		</dialog>
+		<dialog class="register" id="registerDialog">
+			<form class="register__form" method="dialog" id="registerForm">
+				<h2 class="register__title">Регистрация</h2>
+				<input
+					type="text"
+					placeholder="Имя"
+					id="registerName"
+					class="register__input input"
+				/>
+				<input
+					type="tel"
+					placeholder="Телефон"
+					id="registerTel"
+					class="register__input input"
+				/>
+				<input
+					type="email"
+					placeholder="Email"
+					id="registerEmail"
+					class="register__input input"
+				/>
+				<input
+					type="text"
+					placeholder="Логин"
+					id="registerLogin"
+					class="register__input input"
+				/>
+				<input
+					type="password"
+					placeholder="Пароль"
+					id="registerPassword"
+					class="register__input input"
+				/>
+				<button class="register__reg-button button" type="submit">
+					Зарегистрироваться
+				</button>
+			</form>
+		</dialog>
+		<script src="./js/main.js"></script>
 	</body>
 </html>

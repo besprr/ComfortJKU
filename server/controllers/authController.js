@@ -5,20 +5,11 @@ const { generateAccessToken, generateRefreshToken } = require('../services/jwtSe
 
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
-const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-};
-
 const registerUser = async (req, res) => {
     const { Name, Phone, Email, Login, Password, RoleID } = req.body;
 
-    if (!Name || !Email || !Login || !Password || !RoleID) {
+    if (!Name || !Phone|| !Email || !Login || !Password || !RoleID) {
         return res.status(400).json({ error: 'Все поля обязательны для заполнения' });
-    }
-
-    if (!validateEmail(Email)) {
-        return res.status(400).json({ error: 'Некорректный email' });
     }
 
     try {

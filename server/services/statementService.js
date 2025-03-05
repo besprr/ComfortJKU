@@ -36,6 +36,51 @@ const checkMasterAvailability = async (masterID, date, time) => {
 	}
 }
 
+const getBookedTimes = async (masterID, date) => {
+	try {
+		// Получаем занятые времена из таблицы Requests
+		const requestQuery = `
+					SELECT CreationDate 
+					FROM Requests 
+					WHERE MasterID = ? AND CAST(CreationDate AS DATE) = ? AND StatusID IN (1, 2)
+			`
+		const requestResult = await queryDatabase(requestQuery, [masterID, date])
+
+
+		const scheduleQuery = `
+					SELECT WorkTime 
+					FROM WorkSchedules 
+					WHERE MasterID = ? AND WorkDate = ?
+			`
+		const scheduleResult = await queryDatabase(scheduleQuery, [masterID, date])
+
+
+		const bookedTimes = [
+			...requestResult.map(row => row.CreationDate.slice(11, 16)), 
+			...scheduleResult.map(row => row.WorkTime.slice(0, 5)),
+		]
+
+		return bookedTimes
+	} catch (err) {
+		console.error('Ошибка при получении занятых времен:', err)
+		throw err
+	}
+}
+
+const getMasters = async () => {
+	try {
+		const query = `
+					SELECT MasterID, Name 
+					FROM Masters
+			`
+		const result = await queryDatabase(query)
+		return result
+	} catch (err) {
+		console.error('Ошибка при получении списка мастеров:', err)
+		throw err
+	}
+}
+
 const createStatement = async (
 	userID,
 	masterID,
@@ -70,4 +115,9 @@ const createStatement = async (
 	}
 }
 
-module.exports = { checkMasterAvailability, createStatement }
+module.exports = {
+	checkMasterAvailability,
+	createStatement,
+	getBookedTimes,
+	getMasters,
+}

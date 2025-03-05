@@ -20,13 +20,18 @@
 .visible-mobile {
 	display: none;
 
-  @media (max-width: 920px) {
-    display: block;
-  }
+	@media (max-width: 920px) {
+		display: block;
+	}
 }
 
-.input{
+.input {
 	font-size: 20px;
 	border-radius: 20px;
 	padding: 10px;
+	border: 1px solid var(--color-gray);
+
+	&:focus {
+		outline: 1px solid var(--color-gray);
+	}
 }
