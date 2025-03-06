@@ -409,4 +409,50 @@ button:hover {
   align-items: center;
   row-gap: 40px;
   border: none;
+}
+
+.admin-panel {
+  width: 100%;
+}
+.admin-panel__title {
+  font-size: 48px;
+  font-family: "Jost";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  text-align: center;
+}
+.admin-panel h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.admin-panel__form {
+  width: 100%;
+}
+.admin-panel .tabcontent th {
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+.admin-panel .tabcontent td {
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+.admin-panel .tabcontent tr {
+  display: flex;
+  flex-direction: row;
+  -moz-column-gap: 120px;
+       column-gap: 120px;
+}
+.admin-panel .tab {
+  margin: 30px 0;
+}
+.admin-panel__close-btn {
+  margin-top: 50px;
 }/*# sourceMappingURL=styles.css.map */

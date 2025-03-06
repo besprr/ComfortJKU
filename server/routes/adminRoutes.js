@@ -1,12 +1,15 @@
 const express = require('express')
-const { authenticateToken, isAdmin } = require('../middlewares/authMiddleware');
+const { authenticateToken, isAdmin } = require('../middlewares/authMiddleware')
+const { getAllRequests } = require('../controllers/adminController')
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/checkRole', authenticateToken, isAdmin, (req, res) =>{
+router.get('/checkRole', authenticateToken, isAdmin, (req, res) => {
 	res.json({
-		message: 'Добро пожаловать админ!'
+		message: 'Добро пожаловать админ!',
 	})
 })
 
-module.exports = router;
+router.get('/requests', getAllRequests)
+
+module.exports = router

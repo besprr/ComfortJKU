@@ -1,0 +1,53 @@
+.admin-panel {
+	width: 100%;
+
+	&__title {
+		font-size: 48px;
+		font-family: 'Jost';
+		font-weight: 600;
+		font-style: normal;
+		font-display: swap;
+		text-align: center;
+	}
+
+	h3{
+		font-size: 20px;
+		margin-bottom: 20px;
+		font-weight: 600;
+	}
+
+	&__form {
+		width: 100%;
+	}
+
+	.tabcontent {
+		& th {
+			width: 60px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 8px;
+		}
+
+		& td {
+			width: 60px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 8px;
+		}
+		& tr {
+			display: flex;
+			flex-direction: row;
+			column-gap: 120px;
+		}
+	}
+
+	.tab{
+		margin: 30px 0;
+	}
+
+	&__close-btn{
+		margin-top: 50px;
+	}
+}

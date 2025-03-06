@@ -27,7 +27,10 @@
 					</ul>
 				</nav>
 				<div class="header__buttons">
-					<button class="header__admin-button header__button">
+					<button
+						class="header__admin-button header__button"
+						onclick="adminPanelDialog.showModal()"
+					>
 						Админ панель
 					</button>
 					<button
@@ -548,7 +551,7 @@
 						placeholder="Адрес"
 					/>
 					<input
-						type="text"
+						type="number"
 						id="apartmentNumber"
 						class="bid__apartment input"
 						placeholder="Номер квартиры"
@@ -597,7 +600,7 @@
 		</dialog>
 
 		<dialog class="login" id="loginDialog">
-			<form class="login__form" method="dialog" id='loginForm'>
+			<form class="login__form" method="dialog" id="loginForm">
 				<h2 class="login__title">Авторизация</h2>
 				<input
 					type="text"
@@ -614,6 +617,7 @@
 				<button class="login__auth-btn button">Войти</button>
 			</form>
 		</dialog>
+
 		<dialog class="register" id="registerDialog">
 			<form class="register__form" method="dialog" id="registerForm">
 				<h2 class="register__title">Регистрация</h2>
@@ -649,6 +653,64 @@
 				/>
 				<button class="register__reg-button button" type="submit">
 					Зарегистрироваться
+				</button>
+			</form>
+		</dialog>
+
+		<dialog class="admin-panel container" id="adminPanelDialog">
+			<form class="admin-panel__form" method="dialog">
+				<h2 class="admin-panel__title">Административная панель</h2>
+
+				<div class="tab">
+					<button class="tablinks" onclick="openTab(event, 'AllRequests')">
+						Все заявки
+					</button>
+					<button class="tablinks" onclick="openTab(event, 'PendingRequests')">
+						Заявки на подтверждение
+					</button>
+				</div>
+
+				<div id="AllRequests" class="tabcontent">
+					<h3>Все заявки</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Пользователь</th>
+								<th>Проблема</th>
+								<th>Адрес</th>
+								<th>Мастер</th>
+								<th>Статус</th>
+							</tr>
+						</thead>
+						<tbody id="allRequestsTableBody">
+						</tbody>
+					</table>
+				</div>
+
+				<div id="PendingRequests" class="tabcontent">
+					<h3>Заявки на подтверждение</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Пользователь</th>
+								<th>Проблема</th>
+								<th>Адрес</th>
+								<th>Мастер</th>
+								<th>Действие</th>
+							</tr>
+						</thead>
+						<tbody id="pendingRequestsTableBody">
+						</tbody>
+					</table>
+				</div>
+
+				<button
+					class="button admin-panel__close-btn"
+					type="button"
+					onclick="closeAdminPanel()"
+				>
+					Закрыть
 				</button>
 			</form>
 		</dialog>

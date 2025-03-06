@@ -1,6 +1,6 @@
 const serverURL = 'http://localhost:3000'
 
-function updateUIAfterLogin(roleId) {
+function updateUIAfterLogin() {
 	const loginButton = document.querySelector('.header__login-button')
 	const registerButton = document.querySelector('.header__register-button')
 	const logoutButton = document.querySelector('.header__leave-button')
@@ -10,8 +10,7 @@ function updateUIAfterLogin(roleId) {
 	registerButton.style.display = 'none'
 
 	logoutButton.style.display = 'inline-block'
-
-	if (roleId === 1) {
+	if (localStorage.getItem('roleId') === '1') {
 		adminButton.style.display = 'inline-block'
 	} else {
 		adminButton.style.display = 'none'
@@ -31,16 +30,16 @@ function updateUIAfterLogout() {
 	adminButton.style.display = 'none'
 }
 
+//Выход из аккаунта
 function logoutUser() {
 	localStorage.removeItem('userId')
 	localStorage.removeItem('login')
 	localStorage.removeItem('roleId')
 
 	updateUIAfterLogout()
-
-	alert('Вы успешно вышли из системы!')
 }
 
+//Авторизация
 async function loginUser() {
 	const Login = document.getElementById('authLogin').value
 	const Password = document.getElementById('authPassword').value
@@ -128,7 +127,7 @@ async function registerUser() {
 		Phone,
 		Email,
 		Login,
-		Password
+		Password,
 	}
 
 	try {
@@ -326,16 +325,144 @@ async function refreshAccessToken() {
 	}
 }
 
+
+//Админ панель
+
+function closeAdminPanel() {
+	document.getElementById('adminPanelDialog').close();
+}
+
+function openTab(evt, tabName) {
+	let i, tabcontent, tablinks;
+	tabcontent = document.getElementsByClassName('tabcontent');
+	for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = 'none';
+	}
+	tablinks = document.getElementsByClassName('tablinks');
+	for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(' active', '');
+	}
+	document.getElementById(tabName).style.display = 'block';
+	evt.currentTarget.className += ' active';
+}
+
+async function loadRequests() {
+	try {
+			const response = await fetch(`${serverURL}/admin/requests`, {
+					headers: {
+							Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+					},
+			});
+			const data = await response.json();
+			console.log('Ответ сервера:', data);
+
+			// Проверяем, что result существует и приводим его к массиву
+			const requests = Array.isArray(data.result) ? data.result : [data.result];
+
+			console.log('requests:', requests);
+			console.log('Is Array:', Array.isArray(requests));
+
+			const allRequestsTableBody = document.querySelector('#allRequestsTableBody');
+			const pendingRequestsTableBody = document.querySelector('#pendingRequestsTableBody');
+
+			// Очищаем таблицы перед добавлением новых данных
+			allRequestsTableBody.innerHTML = '';
+			pendingRequestsTableBody.innerHTML = '';
+
+			requests.forEach(request => {
+					// Добавляем строку в таблицу "Все заявки"
+					const allRequestsRow = document.createElement('tr');
+					allRequestsRow.innerHTML = `
+							<td>${request.RequestID}</td>
+							<td>${request.UserName || 'Не указано'}</td>
+							<td>${request.ProblemDescription}</td>
+							<td>${request.Address}</td>
+							<td>${request.MasterName || 'Не назначен'}</td>
+							<td>${request.StatusName}</td>
+					`;
+					allRequestsTableBody.appendChild(allRequestsRow);
+
+					// Добавляем строку в таблицу "Заявки на подтверждение", если статус "Pending"
+					if (request.StatusName === 'Pending') {
+							const pendingRequestsRow = document.createElement('tr');
+							pendingRequestsRow.innerHTML = `
+									<td>${request.UserName || 'Не указано'}</td>
+									<td>${request.ProblemDescription}</td>
+									<td>${request.Address}</td>
+									<td>${request.MasterName || 'Не назначен'}</td>
+									<td>
+											<button type="button" onclick="confirmRequest(${request.RequestID})">Подтвердить</button>
+											<button type="button" onclick="rejectRequest(${request.RequestID})">Отклонить</button>
+									</td>
+							`;
+							pendingRequestsTableBody.appendChild(pendingRequestsRow);
+					}
+			});
+	} catch (error) {
+			console.error('Ошибка при загрузке заявок:', error);
+			alert('Не удалось загрузить заявки');
+	}
+}
+
+async function confirmRequest(requestId) {
+	try {
+			const response = await fetch(
+					`${serverURL}/admin/confirm-request/${requestId}`,
+					{
+							method: 'POST',
+							headers: {
+									Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+							},
+					}
+			);
+
+			if (response.ok) {
+					alert('Заявка подтверждена');
+					loadRequests(); // Перезагружаем данные после подтверждения
+			} else {
+					alert('Ошибка при подтверждении заявки');
+			}
+	} catch (error) {
+			console.error('Ошибка при подтверждении заявки:', error);
+			alert('Произошла ошибка при подтверждении заявки');
+	}
+}
+
+async function rejectRequest(requestId) {
+	try {
+			const response = await fetch(
+					`${serverURL}/admin/reject-request/${requestId}`,
+					{
+							method: 'POST',
+							headers: {
+									Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+							},
+					}
+			);
+
+			if (response.ok) {
+					alert('Заявка отклонена');
+					loadRequests(); // Перезагружаем данные после отклонения
+			} else {
+					alert('Ошибка при отклонении заявки');
+			}
+	} catch (error) {
+			console.error('Ошибка при отклонении заявки:', error);
+			alert('Произошла ошибка при отклонении заявки');
+	}
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 	loadMasters()
+	loadRequests()
 
 	const roleId = localStorage.getItem('roleId')
-
 	if (roleId) {
 		updateUIAfterLogin(roleId)
 	} else {
 		updateUIAfterLogout()
 	}
+
 	const logoutButton = document.querySelector('.header__leave-button')
 	const bookingDateInput = document.getElementById('bookingDate')
 	const bidForm = document.getElementById('bidForm')
@@ -347,4 +474,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	registerForm.addEventListener('submit', registerUser)
 	loginForm.addEventListener('submit', loginUser)
 	logoutButton.addEventListener('click', logoutUser)
+
+	document.querySelector('.tablinks').click();
 })

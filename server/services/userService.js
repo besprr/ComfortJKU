@@ -23,6 +23,7 @@ const createUser = async (
         INSERT INTO Users (Name, Phone, Email, Login, PasswordHash, RoleID)
         VALUES (?, ?, ?, ?, ?, ?)
     `
+
 	await queryDatabase(query, [
 		Name,
 		Phone,
@@ -40,8 +41,8 @@ const getUserByLogin = async login => {
 }
 
 const saveRefreshToken = async (userId, refreshToken) => {
-    const delQuery = `DELETE FROM RefreshTokens WHERE UserID = ?;`
-    await queryDatabase(delQuery, [userId])
+	const delQuery = `DELETE FROM RefreshTokens WHERE UserID = ?;`
+	await queryDatabase(delQuery, [userId])
 
 	const isnQuery = `INSERT INTO RefreshTokens (Token, UserID)
     VALUES (?, ?)`
