@@ -1,71 +1,55 @@
 const { queryDatabase } = require('../config/bd')
 
 const checkMasterAvailability = async (masterID, date, time) => {
-	try {
-		const startTime = new Date(`${date} ${time}`)
-		const endTime = new Date(startTime.getTime() + 60 * 60 * 1000)
+  try {
+    const startTime = new Date(`${date} ${time}`);
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // +1 час
 
-		const scheduleQuery = `
-        SELECT * FROM WorkSchedules 
-        WHERE MasterID = ? AND WorkDate = ? AND WorkTime BETWEEN ? AND ?
-    `
-		const scheduleResult = await queryDatabase(scheduleQuery, [
-			masterID,
-			date,
-			time,
-			endTime.toISOString().slice(11, 16),
-		])
+    // Проверяем, есть ли заявки, которые пересекаются с выбранным временем
+    const requestQuery = `
+      SELECT * FROM Requests 
+      WHERE MasterID = ? AND (
+        (CreationDate >= ? AND CreationDate < ?) OR -- Начало заявки внутри интервала
+        (DATEADD(HOUR, 1, CreationDate) > ? AND DATEADD(HOUR, 1, CreationDate) <= ?) -- Конец заявки внутри интервала
+      ) AND StatusID IN (1, 2) -- Только активные заявки
+    `;
+    const requestResult = await queryDatabase(requestQuery, [
+      masterID,
+      startTime.toISOString().slice(0, 19).replace('T', ' '),
+      endTime.toISOString().slice(0, 19).replace('T', ' '),
+      startTime.toISOString().slice(0, 19).replace('T', ' '),
+      endTime.toISOString().slice(0, 19).replace('T', ' '),
+    ]);
 
-		if (scheduleResult.length > 0) {
-			return false
-		}
-
-		const requestQuery = `
-        SELECT * FROM Requests 
-        WHERE MasterID = ? AND CreationDate = ? AND StatusID IN (1, 2)
-    `
-		const requestResult = await queryDatabase(requestQuery, [
-			masterID,
-			startTime,
-			endTime,
-		])
-		return requestResult.length === 0
-	} catch (err) {
-		console.log('Ошибка при проверке доступности мастера', err)
-		throw error
-	}
-}
+    return requestResult.length === 0; // Если заявок нет, время свободно
+  } catch (err) {
+    console.error('Ошибка при проверке доступности мастера', err);
+    throw err;
+  }
+};
 
 const getBookedTimes = async (masterID, date) => {
-	try {
-		// Получаем занятые времена из таблицы Requests
-		const requestQuery = `
-					SELECT CreationDate 
-					FROM Requests 
-					WHERE MasterID = ? AND CAST(CreationDate AS DATE) = ? AND StatusID IN (1, 2)
-			`
-		const requestResult = await queryDatabase(requestQuery, [masterID, date])
+  try {
+    // Получаем занятые времена из таблицы Requests
+    const requestQuery = `
+      SELECT CreationDate 
+      FROM Requests 
+      WHERE MasterID = ? AND CAST(CreationDate AS DATE) = ? AND StatusID IN (1, 2)
+    `;
+    const requestResult = await queryDatabase(requestQuery, [masterID, date]);
 
+    // Формируем список занятых времен
+    const bookedTimes = requestResult.map(row => ({
+      start: row.CreationDate.slice(11, 16), // Время начала (часы:минуты)
+      end: new Date(new Date(row.CreationDate).getTime() + 60 * 60 * 1000).toISOString().slice(11, 16), // Время окончания (+1 час)
+    }));
 
-		const scheduleQuery = `
-					SELECT WorkTime 
-					FROM WorkSchedules 
-					WHERE MasterID = ? AND WorkDate = ?
-			`
-		const scheduleResult = await queryDatabase(scheduleQuery, [masterID, date])
-
-
-		const bookedTimes = [
-			...requestResult.map(row => row.CreationDate.slice(11, 16)), 
-			...scheduleResult.map(row => row.WorkTime.slice(0, 5)),
-		]
-
-		return bookedTimes
-	} catch (err) {
-		console.error('Ошибка при получении занятых времен:', err)
-		throw err
-	}
-}
+    return bookedTimes;
+  } catch (err) {
+    console.error('Ошибка при получении занятых времен:', err);
+    throw err;
+  }
+};
 
 const getMasters = async () => {
 	try {
@@ -82,38 +66,46 @@ const getMasters = async () => {
 }
 
 const createStatement = async (
-	userID,
-	masterID,
-	problemDescription,
-	date,
-	time,
-	apartmentNumber,
-	address
+  userID,
+  masterID,
+  problemDescription,
+  date,
+  time,
+  apartmentNumber,
+  address
 ) => {
-	try {
-		const creationDate = new Date(`${date} ${time}`)
-			.toISOString()
-			.slice(0, 19)
-			.replace('T', ' ')
-		const query = `
-        INSERT INTO Requests (UserID, MasterID, ProblemDescription, Address,ApartmentNumber, CreationDate, StatusID)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `
-		const statusID = 1
-		await queryDatabase(query, [
-			userID,
-			masterID,
-			problemDescription,
-			address,
-			apartmentNumber,
-			creationDate,
-			statusID,
-		])
-	} catch (err) {
-		console.log('Ошибка при создании заявки', err)
-		throw err
-	}
-}
+  try {
+    const creationDate = new Date(`${date} ${time}`)
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ');
+
+    // Проверяем доступность мастера
+    const isAvailable = await checkMasterAvailability(masterID, date, time);
+    if (!isAvailable) {
+      throw new Error('Мастер занят в выбранное время');
+    }
+
+    // Создаем заявку
+    const query = `
+      INSERT INTO Requests (UserID, MasterID, ProblemDescription, Address, ApartmentNumber, CreationDate, StatusID)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    const statusID = 1; // Статус "Новая заявка"
+    await queryDatabase(query, [
+      userID,
+      masterID,
+      problemDescription,
+      address,
+      apartmentNumber,
+      creationDate,
+      statusID,
+    ]);
+  } catch (err) {
+    console.error('Ошибка при создании заявки', err);
+    throw err;
+  }
+};
 
 module.exports = {
 	checkMasterAvailability,

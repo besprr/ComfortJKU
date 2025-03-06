@@ -1,6 +1,5 @@
 // ui.js
-
-export function updateUIAfterLogin(roleId) {
+export function updateUIAfterLogin() {
   const loginButton = document.querySelector('.header__login-button');
   const registerButton = document.querySelector('.header__register-button');
   const logoutButton = document.querySelector('.header__leave-button');
@@ -10,7 +9,7 @@ export function updateUIAfterLogin(roleId) {
   registerButton.style.display = 'none';
   logoutButton.style.display = 'inline-block';
 
-  if (roleId === '1') {
+  if (localStorage.getItem('roleId') === '1') {
     adminButton.style.display = 'inline-block';
   } else {
     adminButton.style.display = 'none';

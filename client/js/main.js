@@ -1,27 +1,26 @@
-// index.js
+// main.js
 import { loadRequests } from './admin.js'
 import { loginUser, logoutUser, registerUser } from './auth.js'
 import { handleDateChange, loadMasters } from './masters.js'
+import { handleFormSubmit } from './statements.js'
 import { updateUIAfterLogin, updateUIAfterLogout } from './ui.js'
 
 document.addEventListener('DOMContentLoaded', () => {
-	const loginButton = document.querySelector('.header__login-button')
-	const registerButton = document.querySelector('.header__register-button')
-	const logoutButton = document.querySelector('.header__leave-button')
-	const masterSelect = document.querySelector('#masterSelect')
+  const roleId = localStorage.getItem('roleId');
+  roleId ? updateUIAfterLogin() : updateUIAfterLogout();
 
-	if (loginButton) loginButton.addEventListener('click', loginUser)
-	if (registerButton) registerButton.addEventListener('click', registerUser)
-	if (logoutButton) logoutButton.addEventListener('click', logoutUser)
-	if (masterSelect) masterSelect.addEventListener('change', handleDateChange)
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('bookingDate').setAttribute('min', today);
 
-	if (localStorage.getItem('accessToken')) {
-		const roleId = localStorage.getItem('roleId')
-		updateUIAfterLogin(roleId)
-		loadMasters()
-	} else {
-		updateUIAfterLogout()
-	}
+  loadMasters();
+  loadRequests();
 
-	loadRequests()
-})
+  document.getElementById('bookingDate').addEventListener('change', handleDateChange);
+  document.getElementById('bidForm').addEventListener('submit', handleFormSubmit);
+  document.getElementById('registerForm').addEventListener('submit', registerUser);
+  document.getElementById('loginForm').addEventListener('submit', loginUser);
+  document.querySelector('.header__leave-button').addEventListener('click', logoutUser);
+
+	
+  document.querySelector('.tablinks').click();
+});
