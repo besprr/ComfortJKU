@@ -11,27 +11,13 @@ const checkIfExists = async (field, value) => {
 	return result.length > 0
 }
 
-const createUser = async (
-	Name,
-	Phone,
-	Email,
-	Login,
-	hashedPassword,
-	RoleID
-) => {
+const createUser = async (Name, Phone, Email, Login, hashedPassword) => {
 	const query = `
-        INSERT INTO Users (Name, Phone, Email, Login, PasswordHash, RoleID)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO Users (Name, Phone, Email, Login, PasswordHash)
+        VALUES (?, ?, ?, ?, ?)
     `
 
-	await queryDatabase(query, [
-		Name,
-		Phone,
-		Email,
-		Login,
-		hashedPassword,
-		RoleID,
-	])
+	await queryDatabase(query, [Name, Phone, Email, Login, hashedPassword])
 }
 
 const getUserByLogin = async login => {

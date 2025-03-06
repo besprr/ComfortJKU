@@ -1,5 +1,6 @@
 .admin-panel {
 	width: 100%;
+	max-width: 1600px;
 
 	&__title {
 		font-size: 48px;
@@ -22,7 +23,7 @@
 
 	.tabcontent {
 		& th {
-			width: 60px;
+			width: 130px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -30,7 +31,7 @@
 		}
 
 		& td {
-			width: 60px;
+			width: 130px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -50,4 +51,10 @@
 	&__close-btn{
 		margin-top: 50px;
 	}
+}
+
+.requests__btn-group{
+	display: flex;
+	flex-direction: column;
+	row-gap: 3px;
 }

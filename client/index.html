@@ -557,7 +557,14 @@
 						placeholder="Номер квартиры"
 					/>
 					<input type="date" id="bookingDate" class="input" />
-					<input type="time" id="bookingTime" class="input" />
+					<input
+						type="time"
+						id="bookingTime"
+						class="input"
+						min="10:00"
+						max="20:00"
+					/>
+
 					<button type="submit">Отправить заявку</button>
 				</form>
 			</section>
@@ -657,7 +664,7 @@
 			</form>
 		</dialog>
 
-		<dialog class="admin-panel container" id="adminPanelDialog">
+		<dialog class="admin-panel" id="adminPanelDialog">
 			<form class="admin-panel__form" method="dialog">
 				<h2 class="admin-panel__title">Административная панель</h2>
 
@@ -683,8 +690,7 @@
 								<th>Статус</th>
 							</tr>
 						</thead>
-						<tbody id="allRequestsTableBody">
-						</tbody>
+						<tbody id="allRequestsTableBody"></tbody>
 					</table>
 				</div>
 
@@ -700,8 +706,7 @@
 								<th>Действие</th>
 							</tr>
 						</thead>
-						<tbody id="pendingRequestsTableBody">
-						</tbody>
+						<tbody id="pendingRequestsTableBody"></tbody>
 					</table>
 				</div>
 
@@ -712,8 +717,10 @@
 				>
 					Закрыть
 				</button>
+
+				<button class="button">ExportWord</button>
 			</form>
 		</dialog>
-		<script src="./js/main.js"></script>
+		<script type='module' src="./js/main.js"></script>
 	</body>
 </html>

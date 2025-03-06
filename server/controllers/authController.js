@@ -15,7 +15,7 @@ const saltRounds = parseInt(process.env.SALT_ROUNDS)
 
 const registerUser = async (req, res) => {
 	const { Name, Phone, Email, Login, Password } = req.body
-	const RoleID = 2
+	
 
 	if (!Name || !Phone || !Email || !Login || !Password) {
 		return res
@@ -35,7 +35,7 @@ const registerUser = async (req, res) => {
 		}
 
 		const hashedPassword = await bcrypt.hash(Password, saltRounds)
-		await createUser(Name, Phone, Email, Login, hashedPassword, RoleID)
+		await createUser(Name, Phone, Email, Login, hashedPassword)
 
 		console.log('✅ Пользователь успешно зарегистрирован:', {
 			Name,

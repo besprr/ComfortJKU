@@ -413,6 +413,7 @@ button:hover {
 
 .admin-panel {
   width: 100%;
+  max-width: 1600px;
 }
 .admin-panel__title {
   font-size: 48px;
@@ -431,14 +432,14 @@ button:hover {
   width: 100%;
 }
 .admin-panel .tabcontent th {
-  width: 60px;
+  width: 130px;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 8px;
 }
 .admin-panel .tabcontent td {
-  width: 60px;
+  width: 130px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -455,4 +456,10 @@ button:hover {
 }
 .admin-panel__close-btn {
   margin-top: 50px;
+}
+
+.requests__btn-group {
+  display: flex;
+  flex-direction: column;
+  row-gap: 3px;
 }/*# sourceMappingURL=styles.css.map */

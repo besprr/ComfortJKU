@@ -18,7 +18,7 @@ const getAllUsers = async () => {
         LEFT JOIN 
             Masters ON Requests.MasterID = Masters.MasterID
         LEFT JOIN 
-            RequestStatuses ON Requests.StatusID = RequestStatuses.StatusIDч;`
+            RequestStatuses ON Requests.StatusID = RequestStatuses.StatusID;`
 	const result = await queryDatabase(query, [])
 	return result
 }
