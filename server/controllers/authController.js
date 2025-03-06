@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cookie = require("cookie");
 const bcrypt = require('bcrypt');
 const { checkIfExists, getUserByLogin, saveRefreshToken, createUser } = require('../services/userService');
 const { generateAccessToken, generateRefreshToken } = require('../services/jwtService');
@@ -55,6 +56,13 @@ const loginUser = async (req, res) => {
         const accessToken = generateAccessToken(user.UserID, user.Login, user.RoleID);
         const refreshToken = generateRefreshToken(user.UserID, user.Login, user.RoleID);
 
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
         await saveRefreshToken(user.UserID, refreshToken);
 
         res.status(200).json({ accessToken, refreshToken });
@@ -65,7 +73,7 @@ const loginUser = async (req, res) => {
 };
 
 const refreshTokens = async (req, res) => {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
         return res.status(400).json({ error: 'Refresh токен обязателен' });
@@ -89,5 +97,7 @@ const refreshTokens = async (req, res) => {
         res.status(500).json({ error: 'Ошибка при обновлении токенов', details: error.message });
     }
 };
+
+
 
 module.exports = { registerUser, loginUser, refreshTokens };

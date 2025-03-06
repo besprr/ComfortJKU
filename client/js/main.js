@@ -84,6 +84,7 @@ async function loginUser() {
 			localStorage.setItem('userId', decodedToken.userId)
 			localStorage.setItem('login', decodedToken.login)
 			localStorage.setItem('roleId', decodedToken.roleId)
+			localStorage.setItem('accessToken', accessToken)
 
 			updateUIAfterLogin(decodedToken.roleId)
 
@@ -227,6 +228,11 @@ async function handleDateChange(event) {
 async function handleFormSubmit(event) {
 	event.preventDefault()
 
+	const token = localStorage.getItem('accessToken')
+	if (!token) {
+		alert('Пожалуйста войдите в систему')
+	}
+
 	const masterID = document.getElementById('masterSelect').value
 	const problemDescription = document.getElementById('problemDescription').value
 	const address = document.getElementById('address').value
@@ -269,6 +275,27 @@ async function handleFormSubmit(event) {
 			}),
 		})
 
+		if (response.status === 401) {
+			accessToken = await refreshAccessToken()
+			if (!accessToken) return
+
+			response = await fetch(`${serverURL}/statement/create`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${accessToken}`,
+				},
+				body: JSON.stringify({
+					MasterID: masterID,
+					ProblemDescription: problemDescription,
+					Address: address,
+					ApartmentNumber: apartmentNumber,
+					Date: bookingDate,
+					Time: bookingTime,
+				}),
+			})
+		}
+		
 		const result = await response.json()
 		if (response.ok) {
 			alert('Заявка успешно создана!')
@@ -278,6 +305,26 @@ async function handleFormSubmit(event) {
 	} catch (error) {
 		console.error('Ошибка при отправке заявки:', error)
 		alert('Произошла ошибка при отправке заявки')
+	}
+}
+
+async function refreshAccessToken() {
+	try {
+		const response = await fetch(`${serverURL}/auth/refresh`, {
+			method: 'POST',
+			credentials: 'include',
+		})
+
+		if (!response.ok) {
+			throw new Error('Не удалось обновить токен')
+		}
+
+		const data = await response.json()
+		localStorage.setItem('accessToken', data.accessToken)
+		return data.accessToken
+	} catch (error) {
+		console.error('Ошибка при обновлении токена:', error)
+		localStorage.removeItem('accessToken')
 	}
 }
 
