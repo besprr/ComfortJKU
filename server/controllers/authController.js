@@ -7,9 +7,10 @@ const { generateAccessToken, generateRefreshToken } = require('../services/jwtSe
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 const registerUser = async (req, res) => {
-    const { Name, Phone, Email, Login, Password, RoleID } = req.body;
+    const { Name, Phone, Email, Login, Password } = req.body;
+    const RoleID = 2;
 
-    if (!Name || !Phone|| !Email || !Login || !Password || !RoleID) {
+    if (!Name || !Phone|| !Email || !Login || !Password) {
         return res.status(400).json({ error: 'Все поля обязательны для заполнения' });
     }
 

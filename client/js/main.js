@@ -117,7 +117,6 @@ async function registerUser() {
 	const Email = document.getElementById('registerEmail').value
 	const Login = document.getElementById('registerLogin').value
 	const Password = document.getElementById('registerPassword').value
-	const RoleID = 2
 
 	if (!Name || !Phone || !Email || !Login || !Password) {
 		alert('Все поля должны быть заполнены')
@@ -129,8 +128,7 @@ async function registerUser() {
 		Phone,
 		Email,
 		Login,
-		Password,
-		RoleID,
+		Password
 	}
 
 	try {
@@ -295,7 +293,7 @@ async function handleFormSubmit(event) {
 				}),
 			})
 		}
-		
+
 		const result = await response.json()
 		if (response.ok) {
 			alert('Заявка успешно создана!')
