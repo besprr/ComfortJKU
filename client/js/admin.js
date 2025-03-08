@@ -1,4 +1,3 @@
-// admin.js
 import { serverURL } from './constants.js'
 
 export async function loadRequests() {
@@ -121,6 +120,5 @@ export function closeAdminPanel() {
 	document.getElementById('adminPanelDialog').close()
 }
 
-// Глобальные функции для вызова из HTML
 window.confirmRequest = confirmRequest
 window.rejectRequest = rejectRequest

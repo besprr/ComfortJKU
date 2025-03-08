@@ -1,4 +1,3 @@
-// main.js
 import { loadRequests } from './admin.js'
 import { loginUser, logoutUser, registerUser } from './auth.js'
 import { handleDateChange, loadMasters } from './masters.js'

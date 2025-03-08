@@ -1,4 +1,3 @@
-// auth.js
 import { serverURL } from './constants.js'
 import { updateUIAfterLogin, updateUIAfterLogout } from './ui.js'
 

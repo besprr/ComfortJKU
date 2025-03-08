@@ -1,4 +1,3 @@
-// ui.js
 export function updateUIAfterLogin() {
   const loginButton = document.querySelector('.header__login-button');
   const registerButton = document.querySelector('.header__register-button');
