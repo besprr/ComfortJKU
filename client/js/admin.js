@@ -1,4 +1,3 @@
-// admin.js
 import { serverURL } from './constants.js'
 
 export async function loadRequests() {
@@ -55,7 +54,7 @@ export async function loadRequests() {
 export async function confirmRequest(requestId) {
 	try {
 		const response = await fetch(
-			`${serverURL}/admin/confirm-request/${requestId}`,
+			`${serverURL}/statement/acceptRequest/${requestId}`,
 			{
 				method: 'POST',
 				headers: {
@@ -77,27 +76,24 @@ export async function confirmRequest(requestId) {
 }
 
 export async function rejectRequest(requestId) {
-	try {
-		const response = await fetch(
-			`${serverURL}/admin/reject-request/${requestId}`,
-			{
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-				},
-			}
-		)
+  try {
+    const response = await fetch(`${serverURL}/statement/reject-request/${requestId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
 
-		if (response.ok) {
-			alert('Заявка отклонена')
-			loadRequests()
-		} else {
-			alert('Ошибка при отклонении заявки')
-		}
-	} catch (error) {
-		console.error('Ошибка при отклонении заявки:', error)
-		alert('Произошла ошибка при отклонении заявки')
-	}
+    if (response.ok) {
+      alert('Заявка отклонена');
+      loadRequests(); 
+    } else {
+      alert('Ошибка при отклонении заявки');
+    }
+  } catch (error) {
+    console.error('Ошибка при отклонении заявки:', error);
+    alert('Произошла ошибка при отклонении заявки');
+  }
 }
 
 export function openTab(evt, tabName) {
@@ -121,6 +117,5 @@ export function closeAdminPanel() {
 	document.getElementById('adminPanelDialog').close()
 }
 
-// Глобальные функции для вызова из HTML
 window.confirmRequest = confirmRequest
 window.rejectRequest = rejectRequest

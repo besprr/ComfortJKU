@@ -1,14 +1,19 @@
-.banners{
+.banners {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
 	column-gap: 10px;
 	row-gap: 10px;
 	margin-bottom: 100px;
-	
-	
 
-	&-card{
+	@include media(1020px) {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&-card {
 		width: 100%;
 		max-width: 565px;
 		height: 210px;
@@ -19,7 +24,7 @@
 		box-sizing: border-box;
 		border-radius: 10px;
 
-		&__title{
+		&__title {
 			font-family: 'Jost';
 			font-weight: 600;
 			font-style: normal;
@@ -28,19 +33,17 @@
 			font-size: 24px;
 		}
 
-		&__icon{
+		&__icon {
 			display: flex;
 			align-items: center;
 		}
 
-		&__description{
+		&__description {
 			line-height: 121%;
 		}
 
-		&__group{
+		&__group {
 			width: 295px;
 		}
-		
 	}
-
 }

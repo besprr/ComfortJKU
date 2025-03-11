@@ -1,4 +1,3 @@
-// masters.js
 import { serverURL } from './constants.js'
 
 export async function loadMasters() {

@@ -39,6 +39,10 @@
 		@include hover {
 			background-color: var(--color-light-gray);
 		}
+
+		@include media(920px) {
+			display: none;
+		}	
 	}
 
 	&__admin-button{

@@ -104,8 +104,9 @@ INSERT INTO Roles (RoleName) VALUES ('Admin'), ('User');
 GO
 
 -- Вставка начальных данных для таблицы СтатусыЗаявок
-INSERT INTO RequestStatuses (StatusName) VALUES ('Pending'), ('Confirmed'), ('Completed');
+INSERT INTO RequestStatuses (StatusName) VALUES ('Pending'), ('Confirmed'), ('Rejected');
 GO
+
 
 -- Вставка начальных данных для таблицы Специализации
 INSERT INTO Specializations (SpecializationName) 

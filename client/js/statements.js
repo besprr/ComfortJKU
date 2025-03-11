@@ -1,4 +1,3 @@
-// statements.js
 import { refreshAccessToken } from './auth.js'
 import { serverURL } from './constants.js'
 

@@ -3,9 +3,8 @@ const { queryDatabase } = require('../config/bd')
 const checkMasterAvailability = async (masterID, date, time) => {
   try {
     const startTime = new Date(`${date} ${time}`);
-    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // +1 час
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); 
 
-    // Проверяем, есть ли заявки, которые пересекаются с выбранным временем
     const requestQuery = `
       SELECT * FROM Requests 
       WHERE MasterID = ? AND (
@@ -30,7 +29,6 @@ const checkMasterAvailability = async (masterID, date, time) => {
 
 const getBookedTimes = async (masterID, date) => {
   try {
-    // Получаем занятые времена из таблицы Requests
     const requestQuery = `
       SELECT CreationDate 
       FROM Requests 
@@ -38,10 +36,9 @@ const getBookedTimes = async (masterID, date) => {
     `;
     const requestResult = await queryDatabase(requestQuery, [masterID, date]);
 
-    // Формируем список занятых времен
     const bookedTimes = requestResult.map(row => ({
-      start: row.CreationDate.slice(11, 16), // Время начала (часы:минуты)
-      end: new Date(new Date(row.CreationDate).getTime() + 60 * 60 * 1000).toISOString().slice(11, 16), // Время окончания (+1 час)
+      start: row.CreationDate.slice(11, 16),
+      end: new Date(new Date(row.CreationDate).getTime() + 60 * 60 * 1000).toISOString().slice(11, 16),
     }));
 
     return bookedTimes;
@@ -80,7 +77,6 @@ const createStatement = async (
       .slice(0, 19)
       .replace('T', ' ');
 
-    // Проверяем доступность мастера
     const isAvailable = await checkMasterAvailability(masterID, date, time);
     if (!isAvailable) {
       throw new Error('Мастер занят в выбранное время');
