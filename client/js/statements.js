@@ -18,6 +18,7 @@ export async function handleFormSubmit(event) {
 	const bookingTime = document.getElementById('bookingTime').value
 
 	const currentDate = new Date().toISOString().split('T')[0]
+	console.log(bookingDate)
 	if (bookingDate < currentDate) {
 		alert('Нельзя выбрать дату раньше текущей')
 		return

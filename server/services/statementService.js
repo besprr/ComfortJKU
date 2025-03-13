@@ -5,19 +5,22 @@ const checkMasterAvailability = async (masterID, date, time) => {
     const startTime = new Date(`${date} ${time}`);
     const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); 
 
+
+
     const requestQuery = `
-      SELECT * FROM Requests 
-      WHERE MasterID = ? AND (
-        (CreationDate >= ? AND CreationDate < ?) OR -- Начало заявки внутри интервала
-        (DATEADD(HOUR, 1, CreationDate) > ? AND DATEADD(HOUR, 1, CreationDate) <= ?) -- Конец заявки внутри интервала
-      ) AND StatusID IN (1, 2) -- Только активные заявки
+  SELECT * FROM Requests 
+WHERE MasterID = ? AND (
+  (CreationDate >= CAST(? AS DATETIME) AND CreationDate < CAST(? AS DATETIME)) OR
+  (DATEADD(HOUR, 1, CreationDate) > CAST(? AS DATETIME) AND DATEADD(HOUR, 1, CreationDate) <= CAST(? AS DATETIME))
+) AND StatusID IN (1, 2)
     `;
+    
     const requestResult = await queryDatabase(requestQuery, [
       masterID,
-      startTime.toISOString().slice(0, 19).replace('T', ' '),
-      endTime.toISOString().slice(0, 19).replace('T', ' '),
-      startTime.toISOString().slice(0, 19).replace('T', ' '),
-      endTime.toISOString().slice(0, 19).replace('T', ' '),
+      startTime,
+      endTime,
+      startTime,
+      endTime,
     ]);
 
     return requestResult.length === 0;
@@ -73,9 +76,6 @@ const createStatement = async (
 ) => {
   try {
     const creationDate = new Date(`${date} ${time}`)
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
 
     const isAvailable = await checkMasterAvailability(masterID, date, time);
     if (!isAvailable) {
