@@ -20,7 +20,7 @@ const checkMasterAvailability = async (masterID, date, time) => {
       endTime.toISOString().slice(0, 19).replace('T', ' '),
     ]);
 
-    return requestResult.length === 0; // Если заявок нет, время свободно
+    return requestResult.length === 0;
   } catch (err) {
     console.error('Ошибка при проверке доступности мастера', err);
     throw err;
@@ -82,12 +82,11 @@ const createStatement = async (
       throw new Error('Мастер занят в выбранное время');
     }
 
-    // Создаем заявку
     const query = `
       INSERT INTO Requests (UserID, MasterID, ProblemDescription, Address, ApartmentNumber, CreationDate, StatusID)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
-    const statusID = 1; // Статус "Новая заявка"
+    const statusID = 1; 
     await queryDatabase(query, [
       userID,
       masterID,
