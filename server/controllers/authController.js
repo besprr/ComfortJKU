@@ -6,16 +6,19 @@ const {
 	saveRefreshToken,
 	createUser,
 } = require('../services/userService')
+
 const {
+	verifyRefreshToken,
 	generateAccessToken,
 	generateRefreshToken,
+	getUserByRefreshToken,
 } = require('../services/jwtService')
+const { queryDatabase } = require('../config/bd')
 
 const saltRounds = parseInt(process.env.SALT_ROUNDS)
 
 const registerUser = async (req, res) => {
 	const { Name, Phone, Email, Login, Password } = req.body
-	
 
 	if (!Name || !Phone || !Email || !Login || !Password) {
 		return res
@@ -45,12 +48,10 @@ const registerUser = async (req, res) => {
 		res.status(201).json({ message: 'Пользователь успешно зарегистрирован' })
 	} catch (error) {
 		console.error('❌ Ошибка при регистрации:', error)
-		res
-			.status(500)
-			.json({
-				error: 'Ошибка при регистрации пользователя',
-				details: error.message,
-			})
+		res.status(500).json({
+			error: 'Ошибка при регистрации пользователя',
+			details: error.message,
+		})
 	}
 }
 
@@ -83,14 +84,14 @@ const loginUser = async (req, res) => {
 			user.RoleID
 		)
 
+		await saveRefreshToken(user.UserID, refreshToken)
+
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
-			secure: true,
-			sameSite: 'Strict',
-			maxAge: 7 * 24 * 60 * 60 * 1000,
+			maxAge: 7 * 24 * 60 * 60 * 1000, 
+			sameSite: 'lax',
+			secure: false, 
 		})
-
-		await saveRefreshToken(user.UserID, refreshToken)
 
 		res.status(200).json({ accessToken, refreshToken })
 	} catch (error) {
@@ -101,8 +102,23 @@ const loginUser = async (req, res) => {
 	}
 }
 
+const logoutUser = async (req, res) => {
+	try {
+		res.clearCookie('refreshToken', {
+			httpOnly: true,
+			sameSite: 'none',
+			secure: true,
+		})
+		return res.status(200).json({ message: 'Выход выполнен успешно' })
+	} catch (error) {
+		res.status(500).json({ error: 'Ошибка при выходе' })
+	}
+}
+
 const refreshTokens = async (req, res) => {
 	const refreshToken = req.cookies.refreshToken
+
+	console.log(refreshToken)
 
 	if (!refreshToken) {
 		return res.status(400).json({ error: 'Refresh токен обязателен' })
@@ -124,7 +140,22 @@ const refreshTokens = async (req, res) => {
 			user.Login,
 			user.RoleID
 		)
-		res.status(200).json({ accessToken })
+		const newRefreshToken = generateRefreshToken(
+			user.UserID,
+			user.Login,
+			user.RoleID
+		)
+
+		await saveRefreshToken(user.UserID, newRefreshToken)
+
+		res.cookie('refreshToken', newRefreshToken, {
+			httpOnly: true,
+			maxAge: 7 * 24 * 60 * 60 * 1000, 
+			sameSite: 'lax',
+			secure: false, 
+		})
+
+		res.status(200).json({ accessToken, newRefreshToken })
 	} catch (error) {
 		console.error('❌ Ошибка при обновлении токенов:', error)
 		res
@@ -133,4 +164,4 @@ const refreshTokens = async (req, res) => {
 	}
 }
 
-module.exports = { registerUser, loginUser, refreshTokens }
+module.exports = { registerUser, loginUser, refreshTokens, logoutUser }

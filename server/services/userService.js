@@ -25,7 +25,7 @@ const getUserByLogin = async login => {
 	const result = await queryDatabase(query, [login])
 	return result[0]
 }
-
+ 
 const saveRefreshToken = async (userId, refreshToken) => {
 	const delQuery = `DELETE FROM RefreshTokens WHERE UserID = ?;`
 	await queryDatabase(delQuery, [userId])

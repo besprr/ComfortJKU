@@ -31,6 +31,7 @@ export async function loginUser(event) {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(userData),
+			credentials: 'include',
 		})
 
 		const result = await response.json()
@@ -101,18 +102,28 @@ export async function registerUser(event) {
 	}
 }
 
-export function logoutUser() {
+export async function logoutUser() {
 	localStorage.removeItem('userId')
 	localStorage.removeItem('login')
 	localStorage.removeItem('roleId')
 	localStorage.removeItem('accessToken')
-	updateUIAfterLogout()
+
+	const response = await fetch(`${serverURL}/auth/logout`, {
+    method: 'POST', 
+    credentials: 'include',
+  });
+
+	
+	if (!response.ok){
+		throw new Error('Не удалось выйти из аккаунта')
+	}
+	else updateUIAfterLogout()
 }
 
 export async function refreshAccessToken() {
 	try {
 		const response = await fetch(`${serverURL}/auth/refresh`, {
-			method: 'POST',
+			method: 'GET',
 			credentials: 'include',
 		})
 

@@ -48,12 +48,10 @@ router.post(
 			res.status(200).json({ message: 'Заявка подтверждена' })
 		} catch (error) {
 			console.error('Ошибка при подтверждении заявки:', error)
-			res
-				.status(500)
-				.json({
-					error: 'Ошибка при подтверждении заявки',
-					details: error.message,
-				})
+			res.status(500).json({
+				error: 'Ошибка при подтверждении заявки',
+				details: error.message,
+			})
 		}
 	}
 )
@@ -84,5 +82,3 @@ router.post(
 )
 
 module.exports = router
-
-
